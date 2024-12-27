@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 5000
 
 # Define the command to run your application
-CMD ["python", "app.py"]
+CMD ["python3", "app.py"]
