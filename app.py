@@ -78,5 +78,6 @@ def handle_message(msg):
 
 if __name__ == '__main__':
     if not os.path.exists('chat.db'):
-        db.create_all()
+        with app.app_context():
+        	db.create_all()
     socketio.run(app, debug=True)
