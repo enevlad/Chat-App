@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
     <title>Chat</title>
     <style>
         body {
@@ -49,6 +50,20 @@
             border-radius: 5px;
             cursor: pointer;
         }
+		#logout-button {
+            margin: 10px;
+            width: calc(100% - 20px);
+            padding: 10px;
+            background-color: #d12738;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #logout-button:hover {
+            background-color: #c82333;
+        }
+
     </style>
 </head>
 <body>
@@ -58,27 +73,57 @@
             <input type="text" id="message" placeholder="Type a message...">
             <button id="send">Send</button>
         </div>
+		 <!-- Logout Button -->
+		 <button id="logout-button">Logout</button>
     </div>
 
     <script>
-        const socket = new WebSocket('ws://' + window.location.host + '/ws/chat');
+        const socket = io();
 
-        socket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
+        socket.on("chat", function(data) {
             const messagesDiv = document.getElementById('messages');
             const messageElement = document.createElement('div');
-            messageElement.textContent = ${data.username}: ${data.message};
+            messageElement.appendChild(document.createTextNode(data["username"] + ": " + data["message"]));
             messagesDiv.appendChild(messageElement);
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        });
+
+        socket.onopen = function(event) {
+            console.log('Connected to the websocket')
+        }
+
+        // Event: When the WebSocket connection is closed
+        socket.onclose = function() {
+            console.error('WebSocket connection closed.');
+        };
+
+        // Event: When an error occurs with WebSocket
+        socket.onerror = function(error) {
+            console.error('WebSocket error:', error);
         };
 
         document.getElementById('send').onclick = function() {
             const input = document.getElementById('message');
+            console.log(input.value);
             if (input.value.trim()) {
-                socket.send(input.value);
+                socket.emit("message", input.value);
                 input.value = '';
             }
         };
+
+        // Allow sending messages with the "Enter" key
+        document.getElementById('message').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('send').click();
+            }
+        });
+
+		// Logout functionality
+        document.getElementById("logout-button").onclick = function() {
+            socket.emit("logout", { username: "your_username" }); // Adjust username logic
+            window.location.href = "/logout"; // Redirect to the login page
+        };
+
     </script>
 </body>
 </html>

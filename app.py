@@ -1,7 +1,8 @@
 # app.py
 from flask import Flask, render_template, request, redirect, session
-from flask_socketio import SocketIO, send
+from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 import os
@@ -74,10 +75,11 @@ def handle_message(msg):
         new_message = Message(user_id=user.id, content=msg, timestamp=datetime.utcnow())
         db.session.add(new_message)
         db.session.commit()
-        send({'username': username, 'message': msg}, broadcast=True)
+        emit("chat", {'username': username, 'message': msg}, broadcast=True)
 
 if __name__ == '__main__':
     if not os.path.exists('chat.db'):
         with app.app_context():
-        	db.create_all()
-    socketio.run(app, debug=True)
+            db.create_all()
+    CORS(app)
+    socketio.run(app, host='0.0.0.0', port=5000, debug=True, allow_unsafe_werkzeug=True)
