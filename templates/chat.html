@@ -50,6 +50,20 @@
             border-radius: 5px;
             cursor: pointer;
         }
+		#logout-button {
+            margin: 10px;
+            width: calc(100% - 20px);
+            padding: 10px;
+            background-color: #d12738;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #logout-button:hover {
+            background-color: #c82333;
+        }
+
     </style>
 </head>
 <body>
@@ -59,6 +73,8 @@
             <input type="text" id="message" placeholder="Type a message...">
             <button id="send">Send</button>
         </div>
+		 <!-- Logout Button -->
+		 <button id="logout-button">Logout</button>
     </div>
 
     <script>
@@ -101,6 +117,13 @@
                 document.getElementById('send').click();
             }
         });
+
+		// Logout functionality
+        document.getElementById("logout-button").onclick = function() {
+            socket.emit("logout", { username: "your_username" }); // Adjust username logic
+            window.location.href = "/logout"; // Redirect to the login page
+        };
+
     </script>
 </body>
 </html>
