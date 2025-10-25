@@ -1,6 +1,6 @@
 # Chat-App
 
-- **Authors: Ene Vlad-Mihnea, Dorneanu Stefanm, Alexadrescu Andrei**
+- **Authors: Ene Vlad-Mihnea, Dorneanu Stefan, Alexadrescu Andrei**
 
 ## app.py
 
